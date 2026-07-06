@@ -1,55 +1,61 @@
 import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { AppButton } from "../src/components/AppButton";
+import { AppCard } from "../src/components/AppCard";
+import { ProgressBar } from "../src/components/ProgressBar";
+import { Screen } from "../src/components/Screen";
+import { colors } from "../src/constants/theme";
 
 export default function HomeScreen() {
+  const totalXp = 0;
+  const nextLevelXp = 300;
+
   return (
-    <View style={styles.container}>
+    <Screen>
       <View>
         <Text style={styles.greeting}>Merhaba</Text>
         <Text style={styles.title}>Bugünkü nöbet arası hazır.</Text>
       </View>
 
-      <View style={styles.progressCard}>
-        <Text style={styles.cardTitle}>Level 1</Text>
-        <Text style={styles.cardText}>XP: 0 / 300</Text>
+      <View style={styles.section}>
+        <AppCard>
+          <Text style={styles.cardTitle}>Level 1</Text>
+          <Text style={styles.cardText}>XP: {totalXp} / {nextLevelXp}</Text>
 
-        <View style={styles.progressBar}>
-          <View style={styles.progressFill} />
-        </View>
+          <View style={styles.progressWrapper}>
+            <ProgressBar value={totalXp} max={nextLevelXp} />
+          </View>
+        </AppCard>
       </View>
 
-      <View style={styles.quizCard}>
-        <Text style={styles.cardTitle}>10 Soruluk Quiz</Text>
-        <Text style={styles.cardText}>
-          Bir kategori seç, 10 soruluk kısa quiz çöz ve XP kazan.
-        </Text>
+      <View style={styles.section}>
+        <AppCard>
+          <Text style={styles.cardTitle}>10 Soruluk Quiz</Text>
+          <Text style={styles.cardText}>
+            Bir kategori seç, kısa quiz çöz ve XP kazan.
+          </Text>
 
-        <Pressable
-          style={styles.primaryButton}
-          onPress={() => router.push("/categories")}
-        >
-          <Text style={styles.primaryButtonText}>Kategori Seç</Text>
-        </Pressable>
+          <View style={styles.buttonWrapper}>
+            <AppButton onPress={() => router.push("/categories")}>
+              Kategori Seç
+            </AppButton>
+          </View>
+        </AppCard>
       </View>
 
-      <Pressable style={styles.secondaryButton} onPress={() => router.replace("/login")}>
-        <Text style={styles.secondaryButtonText}>Çıkış Yap</Text>
-      </Pressable>
-    </View>
+      <View style={styles.footer}>
+        <AppButton variant="secondary" onPress={() => router.replace("/login")}>
+          Çıkış Yap
+        </AppButton>
+      </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    paddingTop: 64,
-    backgroundColor: "#F8FAFC",
-    gap: 20,
-  },
   greeting: {
     fontSize: 16,
-    color: "#64748B",
+    color: colors.mutedText,
     fontWeight: "600",
   },
   title: {
@@ -57,66 +63,29 @@ const styles = StyleSheet.create({
     fontSize: 30,
     lineHeight: 36,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
   },
-  progressCard: {
-    padding: 20,
-    borderRadius: 20,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-  },
-  quizCard: {
-    padding: 20,
-    borderRadius: 20,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    gap: 12,
+  section: {
+    marginTop: 20,
   },
   cardTitle: {
     fontSize: 20,
     fontWeight: "800",
-    color: "#0F172A",
+    color: colors.text,
   },
   cardText: {
+    marginTop: 8,
     fontSize: 15,
-    color: "#475569",
+    color: colors.softText,
     lineHeight: 22,
   },
-  progressBar: {
-    height: 10,
-    borderRadius: 999,
-    backgroundColor: "#E2E8F0",
+  progressWrapper: {
     marginTop: 14,
-    overflow: "hidden",
   },
-  progressFill: {
-    width: "0%",
-    height: "100%",
-    backgroundColor: "#0F766E",
+  buttonWrapper: {
+    marginTop: 16,
   },
-  primaryButton: {
-    height: 52,
-    borderRadius: 14,
-    backgroundColor: "#0F766E",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 8,
-  },
-  primaryButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  secondaryButton: {
-    height: 48,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  secondaryButtonText: {
-    color: "#64748B",
-    fontWeight: "700",
+  footer: {
+    marginTop: 20,
   },
 });

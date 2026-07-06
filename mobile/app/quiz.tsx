@@ -1,37 +1,13 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-
-const demoQuestions = [
-  {
-    id: 1,
-    questionText:
-      "Paslı balgam ile seyreden lober pnömonide en olası etken hangisidir?",
-    options: [
-      "Streptococcus pneumoniae",
-      "Mycoplasma pneumoniae",
-      "Klebsiella pneumoniae",
-      "Staphylococcus aureus",
-    ],
-    correctIndex: 0,
-    explanation:
-      "Lober pnömoni ve paslı balgam klasik olarak S. pneumoniae ile ilişkilidir.",
-  },
-  {
-    id: 2,
-    questionText:
-      "Bakteriyel menenjitte BOS bulguları için en uygun ifade hangisidir?",
-    options: [
-      "Lenfosit artışı, glukoz normal",
-      "Nötrofil artışı, glukoz düşük",
-      "Protein düşük, glukoz yüksek",
-      "Eritrosit artışı, protein normal",
-    ],
-    correctIndex: 1,
-    explanation:
-      "Bakteriyel menenjitte BOS'ta nötrofil ve protein artar, glukoz düşer.",
-  },
-];
+import { StyleSheet, Text, View } from "react-native";
+import { AppButton } from "../src/components/AppButton";
+import { AppCard } from "../src/components/AppCard";
+import { QuestionOptionButton } from "../src/components/QuestionOptionButton";
+import { Screen } from "../src/components/Screen";
+import { colors } from "../src/constants/theme";
+import { getQuestionsByCategoryId } from "../src/data/questions";
+import type { QuestionOption, QuizAnswer } from "../src/types/quiz";
 
 export default function QuizScreen() {
   const params = useLocalSearchParams<{
@@ -39,159 +15,147 @@ export default function QuizScreen() {
     categoryName?: string;
   }>();
 
-  const questions = useMemo(() => demoQuestions, []);
+  const categoryId = Number(params.categoryId ?? 0);
+
+  const questions = useMemo(
+    () => getQuestionsByCategoryId(categoryId, 10),
+    [categoryId],
+  );
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [correctCount, setCorrectCount] = useState(0);
+  const [selectedOptionId, setSelectedOptionId] = useState<
+    QuestionOption["id"] | null
+  >(null);
+  const [answers, setAnswers] = useState<QuizAnswer[]>([]);
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
 
   function handleAnswer() {
-    if (selectedIndex === null) {
+    if (!currentQuestion || selectedOptionId === null) {
       return;
     }
 
-    const isCorrect = selectedIndex === currentQuestion.correctIndex;
-    const nextCorrectCount = isCorrect ? correctCount + 1 : correctCount;
+    const nextAnswers: QuizAnswer[] = [
+      ...answers,
+      {
+        questionId: currentQuestion.id,
+        selectedOptionId,
+      },
+    ];
 
     if (isLastQuestion) {
+      const correctCount = nextAnswers.reduce((total, answer) => {
+        const question = questions.find((item) => item.id === answer.questionId);
+
+        if (!question) {
+          return total;
+        }
+
+        return question.correctOptionId === answer.selectedOptionId
+          ? total + 1
+          : total;
+      }, 0);
+
       router.replace({
         pathname: "/result",
         params: {
-          correctCount: String(nextCorrectCount),
+          correctCount: String(correctCount),
           totalQuestions: String(questions.length),
+          categoryId: String(categoryId),
           categoryName: params.categoryName ?? "Quiz",
         },
       });
+
       return;
     }
 
-    setCorrectCount(nextCorrectCount);
-    setSelectedIndex(null);
+    setAnswers(nextAnswers);
+    setSelectedOptionId(null);
     setCurrentIndex((value) => value + 1);
   }
 
+  if (!currentQuestion) {
+    return (
+      <Screen>
+        <Text style={styles.counter}>Soru bulunamadı</Text>
+        <Text style={styles.emptyText}>
+          Bu kategori için demo soru verisi bulunamadı.
+        </Text>
+
+        <View style={styles.buttonWrapper}>
+          <AppButton onPress={() => router.replace("/categories")}>
+            Kategoriye Dön
+          </AppButton>
+        </View>
+      </Screen>
+    );
+  }
+
   return (
-    <View style={styles.container}>
+    <Screen>
       <Text style={styles.category}>{params.categoryName ?? "Quiz"}</Text>
       <Text style={styles.counter}>
         Soru {currentIndex + 1} / {questions.length}
       </Text>
 
-      <View style={styles.questionCard}>
+      <AppCard>
         <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
-      </View>
+      </AppCard>
 
       <View style={styles.options}>
-        {currentQuestion.options.map((option, index) => {
-          const isSelected = selectedIndex === index;
-
-          return (
-            <Pressable
-              key={option}
-              style={[styles.optionButton, isSelected && styles.selectedOption]}
-              onPress={() => setSelectedIndex(index)}
-            >
-              <Text
-                style={[
-                  styles.optionText,
-                  isSelected && styles.selectedOptionText,
-                ]}
-              >
-                {String.fromCharCode(65 + index)}) {option}
-              </Text>
-            </Pressable>
-          );
-        })}
+        {currentQuestion.options.map((option) => (
+          <QuestionOptionButton
+            key={option.id}
+            option={option}
+            selected={selectedOptionId === option.id}
+            onPress={() => setSelectedOptionId(option.id)}
+          />
+        ))}
       </View>
 
-      <Pressable
-        style={[
-          styles.primaryButton,
-          selectedIndex === null && styles.disabledButton,
-        ]}
-        onPress={handleAnswer}
-        disabled={selectedIndex === null}
-      >
-        <Text style={styles.primaryButtonText}>
+      <View style={styles.buttonWrapper}>
+        <AppButton
+          onPress={handleAnswer}
+          disabled={selectedOptionId === null}
+        >
           {isLastQuestion ? "Quiz'i Bitir" : "Sonraki Soru"}
-        </Text>
-      </Pressable>
-    </View>
+        </AppButton>
+      </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    paddingTop: 64,
-    backgroundColor: "#F8FAFC",
-  },
   category: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#0F766E",
+    color: colors.primary,
   },
   counter: {
     marginTop: 6,
     marginBottom: 24,
     fontSize: 28,
     fontWeight: "800",
-    color: "#0F172A",
-  },
-  questionCard: {
-    padding: 20,
-    borderRadius: 20,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+    color: colors.text,
   },
   questionText: {
     fontSize: 18,
     lineHeight: 27,
     fontWeight: "700",
-    color: "#0F172A",
+    color: colors.text,
   },
   options: {
     marginTop: 24,
     gap: 12,
   },
-  optionButton: {
-    padding: 16,
-    borderRadius: 16,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#CBD5E1",
-  },
-  selectedOption: {
-    borderColor: "#0F766E",
-    backgroundColor: "#ECFDF5",
-  },
-  optionText: {
-    fontSize: 15,
-    lineHeight: 22,
-    color: "#334155",
-    fontWeight: "600",
-  },
-  selectedOptionText: {
-    color: "#0F766E",
-  },
-  primaryButton: {
-    height: 52,
-    borderRadius: 14,
-    backgroundColor: "#0F766E",
-    alignItems: "center",
-    justifyContent: "center",
+  buttonWrapper: {
     marginTop: 28,
   },
-  disabledButton: {
-    backgroundColor: "#94A3B8",
-  },
-  primaryButtonText: {
-    color: "#FFFFFF",
+  emptyText: {
+    marginTop: 8,
     fontSize: 16,
-    fontWeight: "700",
+    color: colors.mutedText,
+    lineHeight: 24,
   },
 });
