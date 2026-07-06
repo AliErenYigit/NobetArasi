@@ -1,0 +1,6 @@
+@NobetArasi.Api_HostAddress = http://localhost:5262
+
+GET {{NobetArasi.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
