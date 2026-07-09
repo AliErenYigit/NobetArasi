@@ -3,52 +3,68 @@ import { StyleSheet, Text, View } from "react-native";
 import { AppButton } from "../src/components/AppButton";
 import { AppCard } from "../src/components/AppCard";
 import { ProgressBar } from "../src/components/ProgressBar";
+import { ProtectedScreen } from "../src/components/ProtectedScreen";
 import { Screen } from "../src/components/Screen";
 import { colors } from "../src/constants/theme";
+import { useAuth } from "../src/contexts/AuthContext";
+import { getNextLevelXp } from "../src/utils/xp";
 
 export default function HomeScreen() {
-  const totalXp = 0;
-  const nextLevelXp = 300;
+  const { user, logoutUser } = useAuth();
+
+  const totalXp = user?.totalXp ?? 0;
+  const level = user?.level ?? 1;
+  const nextLevelXp = getNextLevelXp(level);
+
+  async function handleLogout() {
+    await logoutUser();
+
+    router.replace("/login");
+  }
 
   return (
-    <Screen>
-      <View>
-        <Text style={styles.greeting}>Merhaba</Text>
-        <Text style={styles.title}>Bugünkü nöbet arası hazır.</Text>
-      </View>
-
-      <View style={styles.section}>
-        <AppCard>
-          <Text style={styles.cardTitle}>Level 1</Text>
-          <Text style={styles.cardText}>XP: {totalXp} / {nextLevelXp}</Text>
-
-          <View style={styles.progressWrapper}>
-            <ProgressBar value={totalXp} max={nextLevelXp} />
-          </View>
-        </AppCard>
-      </View>
-
-      <View style={styles.section}>
-        <AppCard>
-          <Text style={styles.cardTitle}>10 Soruluk Quiz</Text>
-          <Text style={styles.cardText}>
-            Bir kategori seç, kısa quiz çöz ve XP kazan.
+    <ProtectedScreen>
+      <Screen>
+        <View>
+          <Text style={styles.greeting}>
+            Merhaba{user?.fullName ? `, ${user.fullName}` : ""}
           </Text>
+          <Text style={styles.title}>Bugünkü nöbet arası hazır.</Text>
+        </View>
 
-          <View style={styles.buttonWrapper}>
-            <AppButton onPress={() => router.push("/categories")}>
-              Kategori Seç
-            </AppButton>
-          </View>
-        </AppCard>
-      </View>
+        <View style={styles.section}>
+          <AppCard>
+            <Text style={styles.cardTitle}>Level {level}</Text>
+            <Text style={styles.cardText}>XP: {totalXp} / {nextLevelXp}</Text>
 
-      <View style={styles.footer}>
-        <AppButton variant="secondary" onPress={() => router.replace("/login")}>
-          Çıkış Yap
-        </AppButton>
-      </View>
-    </Screen>
+            <View style={styles.progressWrapper}>
+              <ProgressBar value={totalXp} max={nextLevelXp} />
+            </View>
+          </AppCard>
+        </View>
+
+        <View style={styles.section}>
+          <AppCard>
+            <Text style={styles.cardTitle}>10 Soruluk Quiz</Text>
+            <Text style={styles.cardText}>
+              Bir kategori seç, kısa quiz çöz ve XP kazan.
+            </Text>
+
+            <View style={styles.buttonWrapper}>
+              <AppButton onPress={() => router.push("/categories")}>
+                Kategori Seç
+              </AppButton>
+            </View>
+          </AppCard>
+        </View>
+
+        <View style={styles.footer}>
+          <AppButton variant="secondary" onPress={handleLogout}>
+            Çıkış Yap
+          </AppButton>
+        </View>
+      </Screen>
+    </ProtectedScreen>
   );
 }
 

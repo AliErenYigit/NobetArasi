@@ -17,6 +17,8 @@ public sealed class Question
     public string OptionC { get; set; } = string.Empty;
 
     public string OptionD { get; set; } = string.Empty;
+    
+    public string OptionE { get; set; } = string.Empty;
 
     public string CorrectOption { get; set; } = string.Empty;
 

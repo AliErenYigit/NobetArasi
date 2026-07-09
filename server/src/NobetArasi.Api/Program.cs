@@ -6,6 +6,23 @@ using NobetArasi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string CorsPolicyName = "NobetArasiCors";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicyName, policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:8081",
+                "http://127.0.0.1:8081",
+                "http://192.168.1.102:8081"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddApplication();
@@ -71,6 +88,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(CorsPolicyName);
 
 app.UseAuthentication();
 app.UseAuthorization();

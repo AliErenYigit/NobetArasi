@@ -1,9 +1,10 @@
 import { Redirect } from "expo-router";
+import type { PropsWithChildren } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { colors } from "../src/constants/theme";
-import { useAuth } from "../src/contexts/AuthContext";
+import { colors } from "../constants/theme";
+import { useAuth } from "../contexts/AuthContext";
 
-export default function IndexScreen() {
+export function ProtectedScreen({ children }: PropsWithChildren) {
   const { authenticated, loading } = useAuth();
 
   if (loading) {
@@ -14,7 +15,11 @@ export default function IndexScreen() {
     );
   }
 
-  return <Redirect href={authenticated ? "/home" : "/login"} />;
+  if (!authenticated) {
+    return <Redirect href="/login" />;
+  }
+
+  return <>{children}</>;
 }
 
 const styles = StyleSheet.create({

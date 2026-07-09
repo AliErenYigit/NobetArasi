@@ -34,10 +34,12 @@ public static class DependencyInjection
 
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IQuizQuestionService, QuizQuestionService>();
+        services.AddScoped<IQuizSubmissionService, QuizSubmissionService>();
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPasswordHashService, PasswordHashService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        
 
         return services;
     }

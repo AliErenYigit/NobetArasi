@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using NobetArasi.Application.Categories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NobetArasi.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/categories")]
 public sealed class CategoriesController : ControllerBase

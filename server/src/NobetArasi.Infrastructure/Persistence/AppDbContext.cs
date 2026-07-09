@@ -122,6 +122,10 @@ public sealed class AppDbContext : DbContext
             entity.Property(question => question.OptionD)
                 .HasMaxLength(300)
                 .IsRequired();
+            
+            entity.Property(question => question.OptionE)
+                .HasMaxLength(300)
+                .IsRequired();
 
             entity.Property(question => question.CorrectOption)
                 .HasMaxLength(1)
@@ -293,106 +297,114 @@ public sealed class AppDbContext : DbContext
     }
 
     private static void SeedQuestions(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Question>().HasData(
-            CreateQuestion(
-                1,
-                1,
-                "Paslı balgam ile seyreden lober pnömonide en olası etken hangisidir?",
-                "Streptococcus pneumoniae",
-                "Mycoplasma pneumoniae",
-                "Klebsiella pneumoniae",
-                "Staphylococcus aureus",
-                "A",
-                "Lober pnömoni ve paslı balgam klasik olarak S. pneumoniae ile ilişkilidir.",
-                "Lober pnömoni + paslı balgam → S. pneumoniae."
-            ),
-            CreateQuestion(
-                2,
-                1,
-                "Bakteriyel menenjitte BOS bulguları için en uygun ifade hangisidir?",
-                "Lenfosit artışı, glukoz normal",
-                "Nötrofil artışı, glukoz düşük",
-                "Protein düşük, glukoz yüksek",
-                "Eritrosit artışı, protein normal",
-                "B",
-                "Bakteriyel menenjitte BOS'ta nötrofil ve protein artar, glukoz düşer.",
-                "Bakteriyel menenjit → nötrofil ↑, protein ↑, glukoz ↓."
-            ),
-            CreateQuestion(
-                3,
-                2,
-                "Beta-laktam antibiyotiklerin temel etki mekanizması nedir?",
-                "Protein sentezini inhibe etmek",
-                "Hücre duvarı sentezini inhibe etmek",
-                "DNA girazı aktive etmek",
-                "Folat sentezini artırmak",
-                "B",
-                "Beta-laktamlar bakteri hücre duvarı sentezini inhibe eder.",
-                "Beta-laktam → hücre duvarı sentezi inhibisyonu."
-            ),
-            CreateQuestion(
-                4,
-                2,
-                "ACE inhibitörlerinin sık görülen yan etkilerinden biri hangisidir?",
-                "Kuru öksürük",
-                "Hipoglisemi",
-                "İşitme kaybı",
-                "Diş eti hipertrofisi",
-                "A",
-                "ACE inhibitörleri bradikinin artışıyla kuru öksürük yapabilir.",
-                "ACE inhibitörü → kuru öksürük, hiperkalemi, anjiyoödem."
-            ),
-            CreateQuestion(
-                5,
-                3,
-                "Apoptoz için en uygun ifade hangisidir?",
-                "Kontrollü hücre ölümü",
-                "Her zaman inflamasyonla gider",
-                "Sadece bakterilerde olur",
-                "Nekroz ile tamamen aynıdır",
-                "A",
-                "Apoptoz kontrollü/programlı hücre ölümüdür.",
-                "Apoptoz → kontrollü hücre ölümü."
-            ),
-            CreateQuestion(
-                6,
-                3,
-                "Akut inflamasyonda baskın hücre genellikle hangisidir?",
-                "Nötrofil",
-                "Fibroblast",
-                "Plazma hücresi",
-                "Adiposit",
-                "A",
-                "Akut inflamasyonda nötrofiller baskındır.",
-                "Akut inflamasyon → nötrofil."
-            ),
-            CreateQuestion(
-                7,
-                4,
-                "Hipotiroidide beklenen laboratuvar bulgusu hangisidir?",
-                "TSH yüksekliği",
-                "TSH düşüklüğü",
-                "Troponin yüksekliği",
-                "Amilaz düşüklüğü",
-                "A",
-                "Primer hipotiroidide genellikle TSH yüksekliği beklenir.",
-                "Primer hipotiroidi → TSH ↑."
-            ),
-            CreateQuestion(
-                8,
-                4,
-                "Demir eksikliği anemisinde beklenen bulgulardan biri hangisidir?",
-                "Mikrositik anemi",
-                "Makrositik anemi",
-                "Lökositoz olmadan tanı konulamaz",
-                "Trombosit sıfırlanır",
-                "A",
-                "Demir eksikliği anemisi tipik olarak mikrositik hipokrom anemi yapar.",
-                "Demir eksikliği → mikrositik hipokrom anemi."
-            )
-        );
-    }
+{
+    modelBuilder.Entity<Question>().HasData(
+        CreateQuestion(
+            1,
+            1,
+            "Paslı balgam ile seyreden lober pnömonide en olası etken hangisidir?",
+            "Streptococcus pneumoniae",
+            "Mycoplasma pneumoniae",
+            "Klebsiella pneumoniae",
+            "Staphylococcus aureus",
+            "Pseudomonas aeruginosa",
+            "A",
+            "Lober pnömoni ve paslı balgam klasik olarak S. pneumoniae ile ilişkilidir.",
+            "Lober pnömoni + paslı balgam → S. pneumoniae."
+        ),
+        CreateQuestion(
+            2,
+            1,
+            "Bakteriyel menenjitte BOS bulguları için en uygun ifade hangisidir?",
+            "Lenfosit artışı, glukoz normal",
+            "Nötrofil artışı, glukoz düşük",
+            "Protein düşük, glukoz yüksek",
+            "Eritrosit artışı, protein normal",
+            "Eozinofil artışı, glukoz yüksek",
+            "B",
+            "Bakteriyel menenjitte BOS'ta nötrofil ve protein artar, glukoz düşer.",
+            "Bakteriyel menenjit → nötrofil ↑, protein ↑, glukoz ↓."
+        ),
+        CreateQuestion(
+            3,
+            2,
+            "Beta-laktam antibiyotiklerin temel etki mekanizması nedir?",
+            "Protein sentezini inhibe etmek",
+            "Hücre duvarı sentezini inhibe etmek",
+            "DNA girazı aktive etmek",
+            "Folat sentezini artırmak",
+            "Hücre membran sterol sentezini inhibe etmek",
+            "B",
+            "Beta-laktamlar bakteri hücre duvarı sentezini inhibe eder.",
+            "Beta-laktam → hücre duvarı sentezi inhibisyonu."
+        ),
+        CreateQuestion(
+            4,
+            2,
+            "ACE inhibitörlerinin sık görülen yan etkilerinden biri hangisidir?",
+            "Kuru öksürük",
+            "Hipoglisemi",
+            "İşitme kaybı",
+            "Diş eti hipertrofisi",
+            "Ciltte gri-mavi renk değişikliği",
+            "A",
+            "ACE inhibitörleri bradikinin artışıyla kuru öksürük yapabilir.",
+            "ACE inhibitörü → kuru öksürük, hiperkalemi, anjiyoödem."
+        ),
+        CreateQuestion(
+            5,
+            3,
+            "Apoptoz için en uygun ifade hangisidir?",
+            "Kontrollü hücre ölümü",
+            "Her zaman inflamasyonla gider",
+            "Sadece bakterilerde olur",
+            "Nekroz ile tamamen aynıdır",
+            "Hücre membranının travmatik parçalanmasıdır",
+            "A",
+            "Apoptoz kontrollü/programlı hücre ölümüdür.",
+            "Apoptoz → kontrollü hücre ölümü."
+        ),
+        CreateQuestion(
+            6,
+            3,
+            "Akut inflamasyonda baskın hücre genellikle hangisidir?",
+            "Nötrofil",
+            "Fibroblast",
+            "Plazma hücresi",
+            "Adiposit",
+            "Melanosit",
+            "A",
+            "Akut inflamasyonda nötrofiller baskındır.",
+            "Akut inflamasyon → nötrofil."
+        ),
+        CreateQuestion(
+            7,
+            4,
+            "Hipotiroidide beklenen laboratuvar bulgusu hangisidir?",
+            "TSH yüksekliği",
+            "TSH düşüklüğü",
+            "Troponin yüksekliği",
+            "Amilaz düşüklüğü",
+            "D-dimer yüksekliği",
+            "A",
+            "Primer hipotiroidide genellikle TSH yüksekliği beklenir.",
+            "Primer hipotiroidi → TSH ↑."
+        ),
+        CreateQuestion(
+            8,
+            4,
+            "Demir eksikliği anemisinde beklenen bulgulardan biri hangisidir?",
+            "Mikrositik anemi",
+            "Makrositik anemi",
+            "Lökositoz olmadan tanı konulamaz",
+            "Trombosit sıfırlanır",
+            "MCV belirgin yüksekliği",
+            "A",
+            "Demir eksikliği anemisi tipik olarak mikrositik hipokrom anemi yapar.",
+            "Demir eksikliği → mikrositik hipokrom anemi."
+        )
+    );
+}
 
     private static Question CreateQuestion(
         int id,
@@ -402,6 +414,7 @@ public sealed class AppDbContext : DbContext
         string optionB,
         string optionC,
         string optionD,
+        string optionE,
         string correctOption,
         string explanation,
         string tusNote)
@@ -415,6 +428,7 @@ public sealed class AppDbContext : DbContext
             OptionB = optionB,
             OptionC = optionC,
             OptionD = optionD,
+            OptionE = optionE,
             CorrectOption = correctOption,
             Explanation = explanation,
             TusNote = tusNote,

@@ -43,7 +43,8 @@ public sealed class QuizQuestionService : IQuizQuestionService
                 question.OptionA,
                 question.OptionB,
                 question.OptionC,
-                question.OptionD
+                question.OptionD,
+                question.OptionE
             })
             .ToListAsync(cancellationToken);
 
@@ -58,7 +59,8 @@ public sealed class QuizQuestionService : IQuizQuestionService
                     new QuizOptionDto("A", question.OptionA),
                     new QuizOptionDto("B", question.OptionB),
                     new QuizOptionDto("C", question.OptionC),
-                    new QuizOptionDto("D", question.OptionD)
+                    new QuizOptionDto("D", question.OptionD),
+                    new QuizOptionDto("E", question.OptionE)
                 }
             ))
             .ToList();

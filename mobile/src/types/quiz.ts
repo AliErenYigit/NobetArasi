@@ -5,30 +5,47 @@ export type Category = {
   description: string;
 };
 
+export type QuestionOptionId = "A" | "B" | "C" | "D" | "E";
+
 export type QuestionOption = {
-  id: "A" | "B" | "C" | "D";
+  id: QuestionOptionId;
   text: string;
 };
 
 export type QuizQuestion = {
   id: number;
-  categoryId: number;
   questionText: string;
   options: QuestionOption[];
-  correctOptionId: QuestionOption["id"];
-  explanation: string;
-  tusNote: string;
 };
 
 export type QuizAnswer = {
   questionId: number;
-  selectedOptionId: QuestionOption["id"];
+  selectedOptionId: QuestionOptionId;
 };
 
-export type QuizResult = {
+export type SubmitQuizRequest = {
+  categoryId: number;
+  answers: QuizAnswer[];
+};
+
+export type QuizSubmitAnswerResult = {
+  questionId: number;
+  questionText: string;
+  selectedOptionId: QuestionOptionId;
+  correctOptionId: QuestionOptionId;
+  isCorrect: boolean;
+  explanation: string;
+  tusNote: string;
+};
+
+export type QuizSubmitResult = {
+  attemptId: string;
   categoryId: number;
   totalQuestions: number;
   correctCount: number;
   wrongCount: number;
   earnedXp: number;
+  totalXp: number;
+  level: number;
+  answers: QuizSubmitAnswerResult[];
 };
